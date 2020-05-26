@@ -1,0 +1,40 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/null/ros_ws/cloudedge/devel/include/**",
+                "/opt/ros/melodic/include/**",
+                "/home/null/ros_ws/cloudedge/src/moveit/moveit_planners/chomp/chomp_motion_planner/include/**",
+                "/home/null/ros_ws/cloudedge/src/descartes/descartes_core/include/**",
+                "/home/null/ros_ws/cloudedge/src/descartes/descartes_moveit/include/**",
+                "/home/null/ros_ws/cloudedge/src/descartes/descartes_planner/include/**",
+                "/home/null/ros_ws/cloudedge/src/descartes/descartes_tests/include/**",
+                "/home/null/ros_ws/cloudedge/src/descartes/descartes_trajectory/include/**",
+                "/home/null/ros_ws/cloudedge/src/descartes/descartes_utilities/include/**",
+                "/home/null/ros_ws/cloudedge/src/moveit/moveit_planners/chomp/chomp_interface/include/**",
+                "/home/null/ros_ws/cloudedge/src/moveit/moveit_ros/benchmarks/include/**",
+                "/home/null/ros_ws/cloudedge/src/moveit/moveit_plugins/moveit_ros_control_interface/include/**",
+                "/home/null/ros_ws/cloudedge/src/moveit/moveit_ros/move_group/include/**",
+                "/home/null/ros_ws/cloudedge/src/moveit/moveit_ros/occupancy_map_monitor/include/**",
+                "/home/null/ros_ws/cloudedge/src/moveit/moveit_ros/robot_interaction/include/**",
+                "/home/null/ros_ws/cloudedge/src/moveit/moveit_setup_assistant/include/**",
+                "/home/null/ros_ws/cloudedge/src/moveit/moveit_plugins/moveit_simple_controller_manager/include/**",
+                "/home/null/ros_ws/cloudedge/src/ur_ik_plugin/include/**",
+                "/home/null/ros_ws/cloudedge/src/universal_robot/ur_kinematics/include/**",
+                "/home/null/ros_ws/cloudedge/src/vision/include/**",
+                "/usr/include/**"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++14",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}
