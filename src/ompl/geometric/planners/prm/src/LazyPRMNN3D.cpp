@@ -661,7 +661,7 @@ int ompl::geometric::LazyPRMNN3D::addGeneratdMilestones()
     namefin.close();
 
     OMPL_INFORM("filename %s", filename.data());
-    std::string filenamefullpath = "/mgn_data/env/" + filename + ".prm";
+    std::string filenamefullpath = "/mgn_data/prm/" + filename + ".prm";
     std::fstream fin(home_path + filenamefullpath, std::ios::in);
     //    fout.open(filename_.data(),ios::in|ios::out);
     //    fout.open("filename_toFile.txt",ios::in|ios::out);
