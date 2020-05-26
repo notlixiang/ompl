@@ -689,7 +689,7 @@ bool ompl::geometric::ValidStateGen::tryAddValidAndSparse(Vertex m, base::State 
     std::lock_guard<std::mutex> _(graphMutex_);
 
     double *val = static_cast<ompl::base::RealVectorStateSpace::StateType *>(state)->values;
-    OMPL_INFORM("%f %f %f", val[0], val[1], val[2]);  //, val[3], val[4], val[5]);
+    OMPL_INFORM("%f %f %f %f %f %f", val[0], val[1], val[2], val[3], val[4], val[5]);
 
     //    Vertex m = boost::add_vertex(g_);
     stateProperty_[m] = state;
@@ -818,7 +818,7 @@ bool ompl::geometric::ValidStateGen::tryAddValidAndSparse(Vertex m, base::State 
                 successfulConnectionAttemptsProperty_[m]++;
                 successfulConnectionAttemptsProperty_[n]++;
                 const base::Cost weight = opt_->motionCost(stateProperty_[n], stateProperty_[m]);
-                OMPL_INFORM("weight %f", weight.value());
+                // OMPL_INFORM("weight %f",weight.value());
                 //                            std::cout<<"weight: "<<weight<<std::endl;
                 const Graph::edge_property_type properties(weight);
                 boost::add_edge(n, m, properties, g_);
@@ -912,8 +912,9 @@ bool ompl::geometric::ValidStateGen::getVertexData()
     {
         base::State *state = stateProperty_[*vertexIt];
         double *val = static_cast<ompl::base::RealVectorStateSpace::StateType *>(state)->values;
-        //        OMPL_INFORM("%f %f %f", val[0], val[1], val[2]);
-        fout << val[0] << "  " << val[1] << "  " << val[2] << endl;
+        // OMPL_INFORM("%f %f %f %f %f %f", val[0], val[1], val[2], val[3], val[4], val[5]);
+        fout << val[0] << "  " << val[1] << "  " << val[2] << "  " << val[3] << "  " << val[4] << "  " << val[5]
+             << endl;
     }
     OMPL_INFORM("vertex number: %ld", *vertexEnd);
     fout.close();

@@ -663,7 +663,7 @@ int ompl::geometric::LazyPRMNNRS::addGeneratdMilestones()
     namefin.close();
 
     OMPL_INFORM("filename %s", filename.data());
-    std::string filenamefullpath = "/mgn_data/randmat3d.txt";
+    std::string filenamefullpath = "/mgn_data/randmat6d.txt";
     std::fstream fin(home_path + filenamefullpath, std::ios::in);
     //    fout.open(filename_.data(),ios::in|ios::out);
     //    fout.open("filename_toFile.txt",ios::in|ios::out);
@@ -675,9 +675,9 @@ int ompl::geometric::LazyPRMNNRS::addGeneratdMilestones()
     char buffer[256];
     int vertexNum = 0;
 
-    int flag_max = 10;  //按一定比例加入生成点和随机点
+    int flag_max = 10000;  //按一定比例加入生成点和随机点
     int flag = flag_max;
-    int cnt_max = 512;
+    int cnt_max = 256;
     while (!fin.eof() && (cnt_max > 0))
     {
         flag--;
@@ -693,7 +693,7 @@ int ompl::geometric::LazyPRMNNRS::addGeneratdMilestones()
             double *val = static_cast<ompl::base::RealVectorStateSpace::StateType *>(state)->values;
             //        double point[3];
             fin.getline(buffer, 100);
-            sscanf(buffer, "%lf %lf %lf\n", &val[0], &val[1], &val[2]);
+            sscanf(buffer, "%lf %lf %lf %lf %lf %lf\n", &val[0], &val[1], &val[2], &val[3], &val[4], &val[5]);
             //            printf("%lf %lf %lf\n", val[0], val[1], val[2]);
             if (fabs(val[0]) > 5.0 || fabs(val[1]) > 5.0 || fabs(val[2]) > 5.0)
             {
@@ -707,7 +707,7 @@ int ompl::geometric::LazyPRMNNRS::addGeneratdMilestones()
         //        OMPL_INFORM("%f %f %f", val[0], val[1], val[2]);
         // OMPL_INFORM("sample");
         /*Vertex addedVertex =*/addMilestone(si_->cloneState(state));
-        // OMPL_INFORM("add");
+        //        OMPL_INFORM("add");
         vertexNum++;
         //        fout << val[0] << "  " << val[1] << "  " << val[2] << endl;
     }

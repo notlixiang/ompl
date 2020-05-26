@@ -203,10 +203,7 @@ void ompl::geometric::LazyPRMNN3D::clear()
     iterations_ = 0;
     bestCost_ = base::Cost(std::numeric_limits<double>::quiet_NaN());
 
-    clock_t start = clock();
     addGeneratdMilestones();
-    clock_t end = clock();
-    OMPL_INFORM("Load prm time cost: %f ms", (end - start) * 1000.0 / CLOCKS_PER_SEC);
 }
 
 void ompl::geometric::LazyPRMNN3D::freeMemory()
@@ -676,12 +673,14 @@ int ompl::geometric::LazyPRMNN3D::addGeneratdMilestones()
     char buffer[256];
     int vertexNum = 0;
 
-    int flag_max = 10;  //按一定比例加入生成点和随机点
+    int flag_max = 10000;  //按一定比例加入生成点和随机点
     int flag = flag_max;
+
+    clock_t begin = clock();
     while (!fin.eof())
     {
         flag--;
-        if (flag < 1)
+        if (false)
         {
             sampler_->sampleUniform(state);
             flag = flag_max;
@@ -692,18 +691,37 @@ int ompl::geometric::LazyPRMNN3D::addGeneratdMilestones()
             double *val = static_cast<ompl::base::RealVectorStateSpace::StateType *>(state)->values;
             //        double point[3];
             fin.getline(buffer, 100);
-            sscanf(buffer, "%lf %lf %lf\n", &val[0], &val[1], &val[2]);
-            //            printf("%lf %lf %lf\n", val[0], val[1], val[2]);
-            if (fabs(val[0]) > 5.0 || fabs(val[1]) > 5.0 || fabs(val[2]) > 5.0)
+            sscanf(buffer, "%lf %lf %lf %lf %lf %lf\n", &val[0], &val[1], &val[2], &val[3], &val[4], &val[5]);
+            //            if(fabs(val[0])>4.0||fabs(val[1])>4.0||fabs(val[2])>4.0||fabs(val[3])>4.0||fabs(val[4])>4.0||fabs(val[5])>4.0)
+            //            {
+            //                continue;
+            //            }
+            bool big_flag = false;
+            for (int i = 0; i < 6; i++)
+            {
+                if (fabs(val[i]) > 3.14)
+                {
+                    if (fabs(val[i]) < 4)
+                    {
+                        val[i] = 3.14 * val[i] / fabs(val[i]);
+                    }
+                    else
+                    {
+                        big_flag = true;
+                    }
+                }
+            }
+            if (big_flag)
             {
                 continue;
             }
+
+            //            OMPL_INFORM("%f %f %f %f %f %f", val[0], val[1], val[2], val[3], val[4], val[5]);
             // OMPL_INFORM("load");
         }
         //        for(int i=0;i<3;i++){
         //
         //        }
-        //        OMPL_INFORM("%f %f %f", val[0], val[1], val[2]);
         // OMPL_INFORM("sample");
         /*Vertex addedVertex =*/addMilestone(si_->cloneState(state));
         // OMPL_INFORM("add");
@@ -711,6 +729,8 @@ int ompl::geometric::LazyPRMNN3D::addGeneratdMilestones()
         //        fout << val[0] << "  " << val[1] << "  " << val[2] << endl;
     }
     si_->freeState(state);
+    clock_t end = clock();
+    OMPL_INFORM("roadmap load cost: %f ms", (end - begin) * 1000.0 / CLOCKS_PER_SEC);
     OMPL_INFORM("Vertex number loaded: %d", vertexNum);
     fin.close();
 
