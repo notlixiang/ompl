@@ -903,7 +903,9 @@ bool ompl::geometric::ValidStateGen::getVertexData()
     //    fout.open("filename_toFile.txt",ios::in|ios::out);
     if (!fout.is_open())
     {
-        OMPL_ERROR(filenamefullpath.data());
+        OMPL_ERROR(filenamefullpath.c_str());
+        OMPL_INFORM("error filename %s", filenamefullpath.data());
+        printf(filenamefullpath.c_str());
         return false;
     }
     Graph::vertex_iterator vertexIt, vertexEnd;  // 顶点
@@ -945,7 +947,8 @@ bool ompl::geometric::ValidStateGen::saveTryTimes()
     //    fout.open("filename_toFile.txt",ios::in|ios::out);
     if (!fout.is_open())
     {
-        OMPL_ERROR(filenamefullpath.data());
+        OMPL_ERROR(filenamefullpath.c_str());
+        OMPL_INFORM("error filename %s", filenamefullpath.data());
         return false;
     }
     size_t len = try_times.size();
