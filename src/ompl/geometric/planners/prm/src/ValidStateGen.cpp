@@ -884,10 +884,10 @@ int ompl::geometric::ValidStateGen::addValidVertex(const base::PlannerTerminatio
 bool ompl::geometric::ValidStateGen::getVertexData()
 {
     OMPL_INFORM("getVertexData");
-
-    const char *file_name_path = "/home/null/ros_ws/name";
+    std::string home_path = getenv("HOME");
+    const char *file_name_path = "/mgn_data/name";
     std::string filename;
-    std::fstream fin(file_name_path, std::ios::in);
+    std::fstream fin(home_path + file_name_path, std::ios::in);
     if (!fin.is_open())
     {
         OMPL_ERROR("无法打开文件 %s", file_name_path);
@@ -926,9 +926,10 @@ bool ompl::geometric::ValidStateGen::saveTryTimes()
 {
     OMPL_INFORM("saveTryTimes");
 
-    const char *file_name_path = "/home/null/ros_ws/name";
+    std::string home_path = getenv("HOME");
+    const char *file_name_path = "/mgn_data/name";
     std::string filename;
-    std::fstream fin(file_name_path, std::ios::in);
+    std::fstream fin(home_path + file_name_path, std::ios::in);
     if (!fin.is_open())
     {
         OMPL_ERROR("无法打开文件 %s", file_name_path);
