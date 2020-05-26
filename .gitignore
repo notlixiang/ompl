@@ -25,7 +25,7 @@ src/ompl/config.h
 tests/BoostTestTeamCityReporter.h
 tests/resources/config.h
 _symlinks.sh
-package.xml
+# package.xml
 .dir-locals.el
 *~
 install-ompl-ubuntu.sh
