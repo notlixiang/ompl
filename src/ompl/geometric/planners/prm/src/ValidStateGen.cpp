@@ -897,7 +897,7 @@ bool ompl::geometric::ValidStateGen::getVertexData()
     fin.close();
 
     OMPL_INFORM("filename %s", filename.data());
-    std::string filenamefullpath = "/home/null/mgn_data/prm/" + filename + ".prm";
+    std::string filenamefullpath = home_path + "/mgn_data/prm/" + filename + ".prm";
     std::fstream fout(filenamefullpath.data(), std::ios::out);
     //    fout.open(filename_.data(),ios::in|ios::out);
     //    fout.open("filename_toFile.txt",ios::in|ios::out);
@@ -939,7 +939,7 @@ bool ompl::geometric::ValidStateGen::saveTryTimes()
     fin.close();
 
     OMPL_INFORM("filename %s", filename.data());
-    std::string filenamefullpath = "/home/null/mgn_data/TryTimes/" + filename + ".pts";
+    std::string filenamefullpath = home_path + "/mgn_data/TryTimes/" + filename + ".pts";
     std::fstream fout(filenamefullpath.data(), std::ios::out);
     //    fout.open(filename_.data(),ios::in|ios::out);
     //    fout.open("filename_toFile.txt",ios::in|ios::out);
