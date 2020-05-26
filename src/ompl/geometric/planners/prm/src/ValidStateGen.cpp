@@ -903,7 +903,7 @@ bool ompl::geometric::ValidStateGen::getVertexData()
     //    fout.open("filename_toFile.txt",ios::in|ios::out);
     if (!fout.is_open())
     {
-        OMPL_ERROR("无法打开文件 %s, 请检查文件路径", filenamefullpath.data());
+        OMPL_ERROR(filenamefullpath.data());
         return false;
     }
     Graph::vertex_iterator vertexIt, vertexEnd;  // 顶点
@@ -945,7 +945,7 @@ bool ompl::geometric::ValidStateGen::saveTryTimes()
     //    fout.open("filename_toFile.txt",ios::in|ios::out);
     if (!fout.is_open())
     {
-        OMPL_ERROR("无法打开文件 %s, 请检查文件路径", filenamefullpath.data());
+        OMPL_ERROR(filenamefullpath.data());
         return false;
     }
     size_t len = try_times.size();
