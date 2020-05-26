@@ -898,12 +898,12 @@ bool ompl::geometric::ValidStateGen::getVertexData()
 
     OMPL_INFORM("filename %s", filename.data());
     std::string filenamefullpath = home_path + "/mgn_data/prm/" + filename + ".prm";
-    std::fstream fout(filenamefullpath.data(), std::ios::out);
+    std::fstream fout(filenamefullpath, std::ios::out);
     //    fout.open(filename_.data(),ios::in|ios::out);
     //    fout.open("filename_toFile.txt",ios::in|ios::out);
     if (!fout.is_open())
     {
-        OMPL_ERROR("无法打开文件 %s, 请检查文件路径", filenamefullpath);
+        OMPL_ERROR("无法打开文件 %s, 请检查文件路径", filenamefullpath.data());
         return false;
     }
     Graph::vertex_iterator vertexIt, vertexEnd;  // 顶点
@@ -940,12 +940,12 @@ bool ompl::geometric::ValidStateGen::saveTryTimes()
 
     OMPL_INFORM("filename %s", filename.data());
     std::string filenamefullpath = home_path + "/mgn_data/TryTimes/" + filename + ".pts";
-    std::fstream fout(filenamefullpath.data(), std::ios::out);
+    std::fstream fout(filenamefullpath, std::ios::out);
     //    fout.open(filename_.data(),ios::in|ios::out);
     //    fout.open("filename_toFile.txt",ios::in|ios::out);
     if (!fout.is_open())
     {
-        OMPL_ERROR("无法打开文件 %s, 请检查文件路径", filenamefullpath);
+        OMPL_ERROR("无法打开文件 %s, 请检查文件路径", filenamefullpath.data());
         return false;
     }
     size_t len = try_times.size();
