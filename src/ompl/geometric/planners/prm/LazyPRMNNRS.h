@@ -1,36 +1,36 @@
 /*********************************************************************
-* Software License Agreement (BSD License)
-*
-*  Copyright (c) 2013, Rice University
-*  All rights reserved.
-*
-*  Redistribution and use in source and binary forms, with or without
-*  modification, are permitted provided that the following conditions
-*  are met:
-*
-*   * Redistributions of source code must retain the above copyright
-*     notice, this list of conditions and the following disclaimer.
-*   * Redistributions in binary form must reproduce the above
-*     copyright notice, this list of conditions and the following
-*     disclaimer in the documentation and/or other materials provided
-*     with the distribution.
-*   * Neither the name of the Rice University nor the names of its
-*     contributors may be used to endorse or promote products derived
-*     from this software without specific prior written permission.
-*
-*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-*  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-*  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-*  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-*  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-*  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-*  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-*  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-*  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-*  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-*  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-*  POSSIBILITY OF SUCH DAMAGE.
-*********************************************************************/
+ * Software License Agreement (BSD License)
+ *
+ *  Copyright (c) 2013, Rice University
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above
+ *     copyright notice, this list of conditions and the following
+ *     disclaimer in the documentation and/or other materials provided
+ *     with the distribution.
+ *   * Neither the name of the Rice University nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ *  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ *  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ *********************************************************************/
 
 /* Author: Ioan Sucan */
 
@@ -62,11 +62,10 @@ namespace ompl
     {
         // Forward declare for use in implementation
         OMPL_CLASS_FORWARD(OptimizationObjective);
-    }
+    }  // namespace base
 
     namespace geometric
     {
-
         /**
            @anchor gLazyPRMNNRS
            @par Short description
@@ -85,25 +84,29 @@ namespace ompl
         class LazyPRMNNRS : public base::Planner
         {
         public:
-            struct vertex_state_t {
+            struct vertex_state_t
+            {
                 typedef boost::vertex_property_tag kind;
             };
 
-            struct vertex_flags_t {
+            struct vertex_flags_t
+            {
                 typedef boost::vertex_property_tag kind;
             };
 
-            struct vertex_component_t {
+            struct vertex_component_t
+            {
                 typedef boost::vertex_property_tag kind;
             };
 
-            struct edge_flags_t {
+            struct edge_flags_t
+            {
                 typedef boost::edge_property_tag kind;
             };
 
             /** @brief The type for a vertex in the roadmap. */
-            typedef boost::adjacency_list_traits<boost::vecS, boost::listS,
-                                                 boost::undirectedS>::vertex_descriptor Vertex;
+            typedef boost::adjacency_list_traits<boost::vecS, boost::listS, boost::undirectedS>::vertex_descriptor
+                Vertex;
 
             /**
              @brief The underlying roadmap graph.
@@ -121,34 +124,36 @@ namespace ompl
 
              @par Edges should be undirected and have a weight property.
              */
-            typedef boost::adjacency_list <
+            typedef boost::adjacency_list<
                 boost::vecS, boost::listS, boost::undirectedS,
-                boost::property < vertex_state_t, base::State*,
-                boost::property < boost::vertex_index_t, unsigned long int,
-                boost::property < vertex_flags_t, unsigned int,
-                boost::property < vertex_component_t, unsigned long int,
-                boost::property < boost::vertex_predecessor_t, Vertex,
-                boost::property < boost::vertex_rank_t, unsigned long int > > > > > >,
-                boost::property < boost::edge_weight_t, base::Cost,
-                boost::property < edge_flags_t, unsigned int > >
-            > Graph;
+                boost::property<
+                    vertex_state_t, base::State *,
+                    boost::property<
+                        boost::vertex_index_t, unsigned long int,
+                        boost::property<vertex_flags_t, unsigned int,
+                                        boost::property<vertex_component_t, unsigned long int,
+                                                        boost::property<boost::vertex_predecessor_t, Vertex,
+                                                                        boost::property<boost::vertex_rank_t,
+                                                                                        unsigned long int>>>>>>,
+                boost::property<boost::edge_weight_t, base::Cost, boost::property<edge_flags_t, unsigned int>>>
+                Graph;
 
             /** @brief The type for an edge in the roadmap. */
-            typedef boost::graph_traits<Graph>::edge_descriptor   Edge;
+            typedef boost::graph_traits<Graph>::edge_descriptor Edge;
 
             /** @brief A nearest neighbors data structure for roadmap vertices. */
-            typedef std::shared_ptr< NearestNeighbors<Vertex> > RoadmapNeighbors;
+            typedef std::shared_ptr<NearestNeighbors<Vertex>> RoadmapNeighbors;
 
             /** @brief A function returning the milestones that should be
              * attempted to connect to. */
-            typedef std::function<const std::vector<Vertex>&(const Vertex)> ConnectionStrategy;
+            typedef std::function<const std::vector<Vertex> &(const Vertex)> ConnectionStrategy;
 
             /** @brief A function that can reject connections.
 
              This is called after previous connections from the neighbor list
              have been added to the roadmap.
              */
-            typedef std::function<bool(const Vertex&, const Vertex&)> ConnectionFilter;
+            typedef std::function<bool(const Vertex &, const Vertex &)> ConnectionFilter;
 
             /** \brief Constructor */
             LazyPRMNNRS(const base::SpaceInformationPtr &si, bool starStrategy = false);
@@ -165,7 +170,7 @@ namespace ompl
             }
 
             /** \brief Set a different nearest neighbors datastructure */
-            template<template<typename T> class NN>
+            template <template <typename T> class NN>
             void setNearestNeighbors()
             {
                 nn_.reset(new NN<Vertex>());
@@ -246,12 +251,11 @@ namespace ompl
             virtual base::PlannerStatus solve(const base::PlannerTerminationCondition &ptc);
 
         protected:
-
             /** \brief Flag indicating validity of an edge of a vertex */
             static const unsigned int VALIDITY_UNKNOWN = 0;
 
             /** \brief Flag indicating validity of an edge of a vertex */
-            static const unsigned int VALIDITY_TRUE    = 1;
+            static const unsigned int VALIDITY_TRUE = 1;
 
             ///////////////////////////////////////
             // Planner progress property functions
@@ -275,8 +279,8 @@ namespace ompl
             /** \brief Free all the memory allocated by the planner */
             void freeMemory();
 
-            /** \brief Construct a milestone for a given state (\e state), store it in the nearest neighbors data structure
-                and then connect it to the roadmap in accordance to the connection strategy. */
+            /** \brief Construct a milestone for a given state (\e state), store it in the nearest neighbors data
+               structure and then connect it to the roadmap in accordance to the connection strategy. */
             Vertex addMilestone(base::State *state);
 
             void uniteComponents(Vertex a, Vertex b);
@@ -287,10 +291,12 @@ namespace ompl
                 If so, return the id of that component. Otherwise, return -1. */
             long int solutionComponent(std::pair<std::size_t, std::size_t> *startGoalPair) const;
 
-            /** \brief Given two milestones from the same connected component, construct a path connecting them and set it as the solution */
+            /** \brief Given two milestones from the same connected component, construct a path connecting them and set
+             * it as the solution */
             ompl::base::PathPtr constructSolution(const Vertex &start, const Vertex &goal);
 
-            /** \brief Compute distance between two milestones (this is simply distance between the states of the milestones) */
+            /** \brief Compute distance between two milestones (this is simply distance between the states of the
+             * milestones) */
             double distanceFunction(const Vertex a, const Vertex b) const
             {
                 return si_->distance(stateProperty_[a], stateProperty_[b]);
@@ -301,73 +307,74 @@ namespace ompl
             base::Cost costHeuristic(Vertex u, Vertex v) const;
 
             /** \brief Flag indicating whether the default connection strategy is the Star strategy */
-            bool                                                   starStrategy_;
+            bool starStrategy_;
 
             /** \brief Function that returns the milestones to attempt connections with */
-            ConnectionStrategy                                     connectionStrategy_;
+            ConnectionStrategy connectionStrategy_;
 
             /** \brief Function that can reject a milestone connection */
-            ConnectionFilter                                       connectionFilter_;
+            ConnectionFilter connectionFilter_;
 
-            /** \brief Flag indicating whether the employed connection strategy was set by the user (or defaults are assumed) */
-            bool                                                   userSetConnectionStrategy_;
+            /** \brief Flag indicating whether the employed connection strategy was set by the user (or defaults are
+             * assumed) */
+            bool userSetConnectionStrategy_;
 
             /** \brief The maximum length of a motion to be added to a tree */
-            double                                                 maxDistance_;
+            double maxDistance_;
 
             /** \brief Sampler user for generating random in the state space */
-            base::StateSamplerPtr                                  sampler_;
+            base::StateSamplerPtr sampler_;
 
             /** \brief Nearest neighbors data structure */
-            RoadmapNeighbors                                       nn_;
+            RoadmapNeighbors nn_;
 
             /** \brief Connectivity graph */
-            Graph                                                  g_;
+            Graph g_;
 
             /** \brief Array of start milestones */
-            std::vector<Vertex>                                    startM_;
+            std::vector<Vertex> startM_;
 
             /** \brief Array of goal milestones */
-            std::vector<Vertex>                                    goalM_;
+            std::vector<Vertex> goalM_;
 
             /** \brief Access to the internal base::state at each Vertex */
             boost::property_map<Graph, boost::vertex_index_t>::type indexProperty_;
 
             /** \brief Access to the internal base::state at each Vertex */
-            boost::property_map<Graph, vertex_state_t>::type       stateProperty_;
+            boost::property_map<Graph, vertex_state_t>::type stateProperty_;
 
             /** \brief Access to the weights of each Edge */
             boost::property_map<Graph, boost::edge_weight_t>::type weightProperty_;
 
             /** \brief Access the connected component of a vertex */
-            boost::property_map<Graph, vertex_component_t>::type   vertexComponentProperty_;
+            boost::property_map<Graph, vertex_component_t>::type vertexComponentProperty_;
 
             /** \brief Access the validity state of a vertex */
-            boost::property_map<Graph, vertex_flags_t>::type       vertexValidityProperty_;
+            boost::property_map<Graph, vertex_flags_t>::type vertexValidityProperty_;
 
             /** \brief Access the validity state of an edge */
-            boost::property_map<Graph, edge_flags_t>::type         edgeValidityProperty_;
+            boost::property_map<Graph, edge_flags_t>::type edgeValidityProperty_;
 
             /** \brief Number of connected components created so far. This is used as an ID only,
                 does not represent the actual number of components currently in the graph. */
-            unsigned long int                                      componentCount_;
+            unsigned long int componentCount_;
 
             /** \brief The number of elements in each component in the LazyPRMNNRS roadmap. */
-            std::map<unsigned long int, unsigned long int>         componentSize_;
+            std::map<unsigned long int, unsigned long int> componentSize_;
 
             /** \brief Objective cost function for PRM graph edges */
-            base::OptimizationObjectivePtr                         opt_;
+            base::OptimizationObjectivePtr opt_;
 
-            base::Cost                                             bestCost_;
-            double                                            rawCost_;
+            base::Cost bestCost_;
+            double rawCost_;
 
-            unsigned long int                                      iterations_;
+            unsigned long int iterations_;
 
             int addGeneratdMilestones();
-            bool saveLogToFile(double time,double cost_raw,double cost_optimized);
+            bool saveLogToFile(double time, double cost_raw, double cost_optimized);
         };
 
-    }
-}
+    }  // namespace geometric
+}  // namespace ompl
 
 #endif

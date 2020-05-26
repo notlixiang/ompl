@@ -1,36 +1,36 @@
 /*********************************************************************
-* Software License Agreement (BSD License)
-*
-*  Copyright (c) 2011, Rice University
-*  All rights reserved.
-*
-*  Redistribution and use in source and binary forms, with or without
-*  modification, are permitted provided that the following conditions
-*  are met:
-*
-*   * Redistributions of source code must retain the above copyright
-*     notice, this list of conditions and the following disclaimer.
-*   * Redistributions in binary form must reproduce the above
-*     copyright notice, this list of conditions and the following
-*     disclaimer in the documentation and/or other materials provided
-*     with the distribution.
-*   * Neither the name of the Rice University nor the names of its
-*     contributors may be used to endorse or promote products derived
-*     from this software without specific prior written permission.
-*
-*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-*  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-*  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-*  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-*  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-*  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-*  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-*  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-*  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-*  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-*  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-*  POSSIBILITY OF SUCH DAMAGE.
-*********************************************************************/
+ * Software License Agreement (BSD License)
+ *
+ *  Copyright (c) 2011, Rice University
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above
+ *     copyright notice, this list of conditions and the following
+ *     disclaimer in the documentation and/or other materials provided
+ *     with the distribution.
+ *   * Neither the name of the Rice University nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ *  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ *  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ *********************************************************************/
 
 /* Author: Ioan Sucan, James D. Marble, Ryan Luna */
 
@@ -60,15 +60,16 @@
 
 using namespace std;
 
-namespace ompl {
-
-    namespace base {
+namespace ompl
+{
+    namespace base
+    {
         // Forward declare for use in implementation
         OMPL_CLASS_FORWARD(OptimizationObjective);
-    }
+    }  // namespace base
 
-    namespace geometric {
-
+    namespace geometric
+    {
         /**
            @anchor gValidStateGen
            @par Short description
@@ -89,18 +90,21 @@ namespace ompl {
         */
 
         /** \brief Probabilistic RoadMap planner */
-        class ValidStateGen : public base::Planner {
+        class ValidStateGen : public base::Planner
+        {
         public:
-
-            struct vertex_state_t {
+            struct vertex_state_t
+            {
                 typedef boost::vertex_property_tag kind;
             };
 
-            struct vertex_total_connection_attempts_t {
+            struct vertex_total_connection_attempts_t
+            {
                 typedef boost::vertex_property_tag kind;
             };
 
-            struct vertex_successful_connection_attempts_t {
+            struct vertex_successful_connection_attempts_t
+            {
                 typedef boost::vertex_property_tag kind;
             };
 
@@ -120,14 +124,16 @@ namespace ompl {
              @par Edges should be undirected and have a weight property.
              */
             typedef boost::adjacency_list<
-                    boost::vecS, boost::vecS, boost::undirectedS,
-                    boost::property<vertex_state_t, base::State *,
-                            boost::property<vertex_total_connection_attempts_t, unsigned long int,
-                                    boost::property<vertex_successful_connection_attempts_t, unsigned long int,
-                                            boost::property<boost::vertex_predecessor_t, unsigned long int,
-                                                    boost::property<boost::vertex_rank_t, unsigned long int> > > > >,
-                    boost::property<boost::edge_weight_t, base::Cost>
-            > Graph;
+                boost::vecS, boost::vecS, boost::undirectedS,
+                boost::property<
+                    vertex_state_t, base::State *,
+                    boost::property<
+                        vertex_total_connection_attempts_t, unsigned long int,
+                        boost::property<vertex_successful_connection_attempts_t, unsigned long int,
+                                        boost::property<boost::vertex_predecessor_t, unsigned long int,
+                                                        boost::property<boost::vertex_rank_t, unsigned long int>>>>>,
+                boost::property<boost::edge_weight_t, base::Cost>>
+                Graph;
 
             /** @brief The type for a vertex in the roadmap. */
             typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
@@ -135,7 +141,7 @@ namespace ompl {
             typedef boost::graph_traits<Graph>::edge_descriptor Edge;
 
             /** @brief A nearest neighbors data structure for roadmap vertices. */
-            typedef std::shared_ptr<NearestNeighbors<Vertex> > RoadmapNeighbors;
+            typedef std::shared_ptr<NearestNeighbors<Vertex>> RoadmapNeighbors;
 
             /** @brief A function returning the milestones that should be
              * attempted to connect to. */
@@ -168,7 +174,8 @@ namespace ompl {
              attempt must be made. The default connection strategy is to connect
              a milestone's 10 closest neighbors.
              */
-            void setConnectionStrategy(const ConnectionStrategy &connectionStrategy) {
+            void setConnectionStrategy(const ConnectionStrategy &connectionStrategy)
+            {
                 connectionStrategy_ = connectionStrategy;
                 userSetConnectionStrategy_ = true;
             }
@@ -191,14 +198,15 @@ namespace ompl {
              a neighboring milestone and returns whether a connection should be
              attempted.
              */
-            void setConnectionFilter(const ConnectionFilter &connectionFilter) {
+            void setConnectionFilter(const ConnectionFilter &connectionFilter)
+            {
                 connectionFilter_ = connectionFilter;
             }
 
             virtual void getPlannerData(base::PlannerData &data) const;
 
-            /** \brief While the termination condition allows, this function will construct the roadmap (using growRoadmap() and expandRoadmap(),
-                maintaining a 2:1 ratio for growing/expansion of roadmap) */
+            /** \brief While the termination condition allows, this function will construct the roadmap (using
+               growRoadmap() and expandRoadmap(), maintaining a 2:1 ratio for growing/expansion of roadmap) */
             void constructRoadmap(const base::PlannerTerminationCondition &ptc);
 
             /** \brief If the user desires, the roadmap can be
@@ -250,8 +258,9 @@ namespace ompl {
             virtual void clear();
 
             /** \brief Set a different nearest neighbors datastructure */
-            template<template<typename T> class NN>
-            void setNearestNeighbors() {
+            template <template <typename T> class NN>
+            void setNearestNeighbors()
+            {
                 nn_.reset(new NN<Vertex>());
                 if (!userSetConnectionStrategy_)
                     connectionStrategy_ = ConnectionStrategy();
@@ -261,37 +270,42 @@ namespace ompl {
 
             virtual void setup();
 
-            const Graph &getRoadmap() const {
+            const Graph &getRoadmap() const
+            {
                 return g_;
             }
 
             /** \brief Return the number of milestones currently in the graph */
-            unsigned long int milestoneCount() const {
+            unsigned long int milestoneCount() const
+            {
                 return boost::num_vertices(g_);
             }
 
             /** \brief Return the number of edges currently in the graph */
-            unsigned long int edgeCount() const {
+            unsigned long int edgeCount() const
+            {
                 return boost::num_edges(g_);
             }
 
-            const RoadmapNeighbors &getNearestNeighbors() {
+            const RoadmapNeighbors &getNearestNeighbors()
+            {
                 return nn_;
             }
 
         protected:
-
             /** \brief Free all the memory allocated by the planner */
             void freeMemory();
 
-            /** \brief Construct a milestone for a given state (\e state), store it in the nearest neighbors data structure
-                and then connect it to the roadmap in accordance to the connection strategy. */
+            /** \brief Construct a milestone for a given state (\e state), store it in the nearest neighbors data
+               structure and then connect it to the roadmap in accordance to the connection strategy. */
             Vertex addMilestone(base::State *state);
 
-            /** \brief Make two milestones (\e m1 and \e m2) be part of the same connected component. The component with fewer elements will get the id of the component with more elements. */
+            /** \brief Make two milestones (\e m1 and \e m2) be part of the same connected component. The component with
+             * fewer elements will get the id of the component with more elements. */
             void uniteComponents(Vertex m1, Vertex m2);
 
-            /** \brief Check if two milestones (\e m1 and \e m2) are part of the same connected component. This is not a const function since we use incremental connected components from boost */
+            /** \brief Check if two milestones (\e m1 and \e m2) are part of the same connected component. This is not a
+             * const function since we use incremental connected components from boost */
             bool sameComponent(Vertex m1, Vertex m2);
 
             /** \brief Randomly sample the state space, add and connect milestones
@@ -299,8 +313,8 @@ namespace ompl {
                  \e ptc returns true.  Use \e workState as temporary memory. */
             void growRoadmap(const base::PlannerTerminationCondition &ptc, base::State *workState);
 
-            int addValidVertex(const base::PlannerTerminationCondition &ptc,int max_try);
-            void addValidVertexThread(const base::PlannerTerminationCondition &ptc,int max_try);
+            int addValidVertex(const base::PlannerTerminationCondition &ptc, int max_try);
+            void addValidVertexThread(const base::PlannerTerminationCondition &ptc, int max_try);
             bool getVertexData();
             bool saveTryTimes();
             bool testSampable(int max_try);
@@ -313,40 +327,49 @@ namespace ompl {
             /** Thread that checks for solution */
             void checkForSolution(const base::PlannerTerminationCondition &ptc, base::PathPtr &solution);
 
-            /** \brief Check if there exists a solution, i.e., there exists a pair of milestones such that the first is in \e start and the second is in \e goal, and the two milestones are in the same connected component. If a solution is found, it is constructed in the \e solution argument. */
+            /** \brief Check if there exists a solution, i.e., there exists a pair of milestones such that the first is
+             * in \e start and the second is in \e goal, and the two milestones are in the same connected component. If
+             * a solution is found, it is constructed in the \e solution argument. */
             bool maybeConstructSolution(const std::vector<Vertex> &starts, const std::vector<Vertex> &goals,
                                         base::PathPtr &solution);
 
             /** \brief Returns the value of the addedNewSolution_ member. */
             bool addedNewSolution() const;
 
-            /** \brief Given two milestones from the same connected component, construct a path connecting them and set it as the solution */
+            /** \brief Given two milestones from the same connected component, construct a path connecting them and set
+             * it as the solution */
             base::PathPtr constructSolution(const Vertex &start, const Vertex &goal);
 
             /** \brief Given two vertices, returns a heuristic on the cost of the path connecting them.
                 This method wraps OptimizationObjective::motionCostHeuristic */
             base::Cost costHeuristic(Vertex u, Vertex v) const;
 
-            /** \brief Compute distance between two milestones (this is simply distance between the states of the milestones) */
-            double distanceFunction(const Vertex a, const Vertex b) const {
+            /** \brief Compute distance between two milestones (this is simply distance between the states of the
+             * milestones) */
+            double distanceFunction(const Vertex a, const Vertex b) const
+            {
                 return si_->distance(stateProperty_[a], stateProperty_[b]);
             }
 
             ///////////////////////////////////////
             // Planner progress property functions
-            std::string getIterationCount() const {
+            std::string getIterationCount() const
+            {
                 return std::to_string(iterations_);
             }
 
-            std::string getBestCost() const {
+            std::string getBestCost() const
+            {
                 return std::to_string(bestCost_.value());
             }
 
-            std::string getMilestoneCountString() const {
+            std::string getMilestoneCountString() const
+            {
                 return std::to_string(milestoneCount());
             }
 
-            std::string getEdgeCountString() const {
+            std::string getEdgeCountString() const
+            {
                 return std::to_string(edgeCount());
             }
 
@@ -375,21 +398,19 @@ namespace ompl {
             boost::property_map<Graph, vertex_state_t>::type stateProperty_;
 
             /** \brief Access to the number of total connection attempts for a vertex */
-            boost::property_map<Graph,
-                    vertex_total_connection_attempts_t>::type totalConnectionAttemptsProperty_;
+            boost::property_map<Graph, vertex_total_connection_attempts_t>::type totalConnectionAttemptsProperty_;
 
             /** \brief Access to the number of successful connection attempts for a vertex */
-            boost::property_map<Graph,
-                    vertex_successful_connection_attempts_t>::type successfulConnectionAttemptsProperty_;
+            boost::property_map<Graph, vertex_successful_connection_attempts_t>::type
+                successfulConnectionAttemptsProperty_;
 
             /** \brief Access to the weights of each Edge */
             boost::property_map<Graph, boost::edge_weight_t>::type weightProperty_;
 
             /** \brief Data structure that maintains the connected components */
-            boost::disjoint_sets<
-                    boost::property_map<Graph, boost::vertex_rank_t>::type,
-                    boost::property_map<Graph, boost::vertex_predecessor_t>::type>
-                    disjointSets_;
+            boost::disjoint_sets<boost::property_map<Graph, boost::vertex_rank_t>::type,
+                                 boost::property_map<Graph, boost::vertex_predecessor_t>::type>
+                disjointSets_;
 
             /** \brief Function that returns the milestones to attempt connections with */
             ConnectionStrategy connectionStrategy_;
@@ -397,7 +418,8 @@ namespace ompl {
             /** \brief Function that can reject a milestone connection */
             ConnectionFilter connectionFilter_;
 
-            /** \brief Flag indicating whether the employed connection strategy was set by the user (or defaults are assumed) */
+            /** \brief Flag indicating whether the employed connection strategy was set by the user (or defaults are
+             * assumed) */
             bool userSetConnectionStrategy_;
 
             /** \brief Random number generator */
@@ -420,7 +442,7 @@ namespace ompl {
             base::Cost bestCost_;
         };
 
-    }
-}
+    }  // namespace geometric
+}  // namespace ompl
 
 #endif
