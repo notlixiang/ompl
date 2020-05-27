@@ -649,12 +649,12 @@ int ompl::geometric::LazyPRMNN3D::addGeneratdMilestones()
     OMPL_DEBUG("addGeneratdMilestones");
     std::string home_path = getenv("HOME");
     base::State *state = si_->allocState();
-    std::string file_name_path = "/mgn_data/name";
+    std::string file_name_path = "/tmp/rm_name";
     std::string filename;
-    std::fstream namefin(home_path + file_name_path, std::ios::in);
+    std::fstream namefin(file_name_path, std::ios::in);
     if (!namefin.is_open())
     {
-        OMPL_ERROR("无法打开文件 %s", home_path + file_name_path);
+        OMPL_ERROR("无法打开文件 %s", file_name_path);
         return false;
     }
     namefin >> filename;
@@ -740,12 +740,12 @@ int ompl::geometric::LazyPRMNN3D::addGeneratdMilestones()
 bool ompl::geometric::LazyPRMNN3D::saveLogToFile(double time, double cost_raw, double cost_optimized)
 {
     std::string home_path = getenv("HOME");
-    std::string file_name_path = "/mgn_data/name";
+    std::string file_name_path = "/tmp/rm_name";
     std::string filename;
-    std::fstream namefin(home_path + file_name_path, std::ios::in);
+    std::fstream namefin(file_name_path, std::ios::in);
     if (!namefin.is_open())
     {
-        OMPL_ERROR("无法打开文件 %s", home_path + file_name_path);
+        OMPL_ERROR("无法打开文件 %s", file_name_path);
     }
     namefin >> filename;
     namefin.close();
