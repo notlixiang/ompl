@@ -41,5 +41,7 @@
 #include "ompl/base/SpaceInformation.h"
 #include "ompl/geometric/PathGeometric.h"
 #include "ompl/util/RandomNumbers.h"
+#include <iostream>
+#include <fstream>
 
 #endif

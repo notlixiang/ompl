@@ -211,6 +211,8 @@ void ompl::geometric::LazyPRM::clear()
     componentCount_ = 0;
     iterations_ = 0;
     bestCost_ = base::Cost(std::numeric_limits<double>::quiet_NaN());
+
+    addGeneratdMilestones();
 }
 
 void ompl::geometric::LazyPRM::freeMemory()
@@ -248,12 +250,15 @@ ompl::geometric::LazyPRM::Vertex ompl::geometric::LazyPRM::addMilestone(base::St
 
 ompl::base::PlannerStatus ompl::geometric::LazyPRM::solve(const base::PlannerTerminationCondition &ptc)
 {
+    clock_t begin_all = clock();
+    clock_t end_all = clock();
     checkValidity();
     auto *goal = dynamic_cast<base::GoalSampleableRegion *>(pdef_->getGoal().get());
 
     if (goal == nullptr)
     {
         OMPL_ERROR("%s: Unknown type of goal", getName().c_str());
+        saveLogToFile(-1,-1);
         return base::PlannerStatus::UNRECOGNIZED_GOAL_TYPE;
     }
 
@@ -264,12 +269,14 @@ ompl::base::PlannerStatus ompl::geometric::LazyPRM::solve(const base::PlannerTer
     if (startM_.empty())
     {
         OMPL_ERROR("%s: There are no valid initial states!", getName().c_str());
+        saveLogToFile(-1,-1);
         return base::PlannerStatus::INVALID_START;
     }
 
     if (!goal->couldSample())
     {
         OMPL_ERROR("%s: Insufficient states in sampleable goal region", getName().c_str());
+        saveLogToFile(-1,-1);
         return base::PlannerStatus::INVALID_GOAL;
     }
 
@@ -283,6 +290,7 @@ ompl::base::PlannerStatus ompl::geometric::LazyPRM::solve(const base::PlannerTer
         if (goalM_.empty())
         {
             OMPL_ERROR("%s: Unable to find any valid goal states", getName().c_str());
+            saveLogToFile(-1,-1);
             return base::PlannerStatus::INVALID_GOAL;
         }
     }
@@ -361,7 +369,13 @@ ompl::base::PlannerStatus ompl::geometric::LazyPRM::solve(const base::PlannerTer
     }
 
     OMPL_INFORM("%s: Created %u states", getName().c_str(), boost::num_vertices(g_) - nrStartStates);
-
+    end_all = clock();
+    if(bestSolution)
+    {
+        saveLogToFile((end_all-begin_all)*1000.0/CLOCKS_PER_SEC,bestCost_.value());
+    } else{
+        saveLogToFile(-1,-1);
+    }
     return bestSolution ? base::PlannerStatus::EXACT_SOLUTION : base::PlannerStatus::TIMEOUT;
 }
 
@@ -578,4 +592,102 @@ void ompl::geometric::LazyPRM::getPlannerData(base::PlannerData &data) const
         data.tagState(stateProperty_[v1], (vertexValidityProperty_[v1] & VALIDITY_TRUE) == 0 ? 0 : 1);
         data.tagState(stateProperty_[v2], (vertexValidityProperty_[v2] & VALIDITY_TRUE) == 0 ? 0 : 1);
     }
+}
+
+bool ompl::geometric::LazyPRM::saveLogToFile(double time, double cost){
+    std::string home_path = getenv("HOME");
+    std::string file_name_path = "/tmp/rm_name";
+    std::string filename;
+    std::fstream namefin(file_name_path, std::ios::in);
+    if (!namefin.is_open()) {
+        OMPL_ERROR("unable to open file %s", (file_name_path).c_str());
+    }
+    namefin >> filename;
+    namefin.close();
+    printf("writing to file...");
+    std::string save_path_full = "/mgn_data/test_log/LazyPRMlog.txt";
+    std::fstream fout(home_path+save_path_full, std::ios::app);
+    if (!fout.is_open()) {
+        std::cerr << "unable to open file " << home_path+save_path_full << std::endl;
+    }
+    fout <<filename<<"  time "<<time<<"  cost "<<cost;
+    std::cout <<filename<<"  time "<<time<<"  cost "<<cost;
+    fout <<std::endl;
+    fout.close();
+    std::cout <<std::endl;
+    return true;
+}
+
+int ompl::geometric::LazyPRM::addGeneratdMilestones() {
+    std::string home_path = getenv("HOME");
+    double pre_map_time_max=50;
+    clock_t begin_pre_map = clock();
+    clock_t end_pre_map = clock();
+
+    OMPL_DEBUG("addGeneratdMilestones");
+    base::State *state = si_->allocState();
+    std::string file_name_path = "/tmp/rm_name";
+    std::string filename;
+    std::fstream namefin(file_name_path, std::ios::in);
+    if (!namefin.is_open()) {
+        OMPL_ERROR("unable to open file %s", file_name_path.c_str());
+        return false;
+    }
+    namefin >> filename;
+    namefin.close();
+
+    OMPL_INFORM("filename %s", filename.c_str());
+    std::string filenamefullpath = "/mgn_data/randmat6d.txt";
+    std::fstream fin(home_path+filenamefullpath, std::ios::in);
+//    fout.open(filename_.data(),ios::in|ios::out);
+//    fout.open("filename_toFile.txt",ios::in|ios::out);
+    if (!fin.is_open()) {
+        OMPL_ERROR("unable to open file %s check path", filenamefullpath.c_str());
+        return false;
+    }
+    char buffer[256];
+    int vertexNum = 0;
+
+    int flag_max=100;//按一定比例加入生成点和随机点
+    int flag = flag_max;
+    int cnt_max=512;
+    while (!fin.eof()&&(cnt_max-->0)&&((end_pre_map-begin_pre_map)*1000.0/CLOCKS_PER_SEC)<pre_map_time_max) {
+        flag--;
+        if (flag < 1) {
+            if (!sampler_){sampler_ = si_->allocStateSampler();}
+            sampler_->sampleUniform(state);
+            flag=flag_max;
+//            OMPL_INFORM("sample");
+        } else {
+            double *val = static_cast<ompl::base::RealVectorStateSpace::StateType *>(state)->values;
+//        double point[3];
+            fin.getline(buffer, 100);
+            sscanf(buffer, "%lf %lf %lf %lf %lf %lf\n", &val[0], &val[1], &val[2], &val[3], &val[4], &val[5]);
+//            printf("%lf %lf %lf\n", val[0], val[1], val[2]);
+            if(fabs(val[0])>5.0||fabs(val[1])>5.0||fabs(val[2])>5.0)
+            {
+                continue;
+            }
+            // OMPL_INFORM("load");
+        }
+//        for(int i=0;i<3;i++){
+//
+//        }
+//        OMPL_INFORM("%f %f %f", val[0], val[1], val[2]);
+        // OMPL_INFORM("sample");
+        /*Vertex addedVertex =*/
+        if(si_->isValid(state)){
+            addMilestone(si_->cloneState(state));
+            // OMPL_INFORM("add");
+            vertexNum++;
+        }
+        end_pre_map = clock();
+//        fout << val[0] << "  " << val[1] << "  " << val[2] << endl;
+    }
+    si_->freeState(state);
+    OMPL_INFORM("Vertex number loaded: %d", vertexNum);
+    OMPL_INFORM("Vertex pre-map time: %lf", (end_pre_map-begin_pre_map)*1000.0/CLOCKS_PER_SEC);
+    fin.close();
+
+    return true;
 }

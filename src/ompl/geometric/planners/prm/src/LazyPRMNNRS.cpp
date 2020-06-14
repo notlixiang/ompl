@@ -656,20 +656,20 @@ int ompl::geometric::LazyPRMNNRS::addGeneratdMilestones()
     std::fstream namefin(file_name_path, std::ios::in);
     if (!namefin.is_open())
     {
-        OMPL_ERROR("无法打开文件 %s", file_name_path);
+        OMPL_ERROR("unable to open file %s", file_name_path.c_str());
         return false;
     }
     namefin >> filename;
     namefin.close();
 
-    OMPL_INFORM("filename %s", filename.data());
+    OMPL_INFORM("filename %s", filename.c_str());
     std::string filenamefullpath = "/mgn_data/randmat6d.txt";
     std::fstream fin(home_path + filenamefullpath, std::ios::in);
     //    fout.open(filename_.data(),ios::in|ios::out);
     //    fout.open("filename_toFile.txt",ios::in|ios::out);
     if (!fin.is_open())
     {
-        OMPL_ERROR("unable to open file %s check path", home_path + filenamefullpath);
+        OMPL_ERROR("unable to open file %s check path", (home_path + filenamefullpath).c_str());
         return false;
     }
     char buffer[256];
@@ -726,7 +726,7 @@ bool ompl::geometric::LazyPRMNNRS::saveLogToFile(double time, double cost_raw, d
     std::fstream namefin(file_name_path, std::ios::in);
     if (!namefin.is_open())
     {
-        OMPL_ERROR("无法打开文件 %s", file_name_path);
+        OMPL_ERROR("unable to open file %s", file_name_path.c_str());
     }
     namefin >> filename;
     namefin.close();
@@ -735,7 +735,7 @@ bool ompl::geometric::LazyPRMNNRS::saveLogToFile(double time, double cost_raw, d
     std::fstream fout(home_path + save_path_full, std::ios::app);
     if (!fout.is_open())
     {
-        std::cerr << "无法打开文件 " << home_path + save_path_full << std::endl;
+        std::cerr << "unable to open file " << home_path + save_path_full << std::endl;
     }
     fout << filename << "  time " << time << "  cost_raw " << cost_raw << "  cost_optimized " << cost_optimized;
     std::cout << filename << "  time " << time << "  cost_raw " << cost_raw << "  cost_optimized " << cost_optimized;

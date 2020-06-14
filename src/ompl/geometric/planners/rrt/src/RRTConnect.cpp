@@ -185,12 +185,15 @@ ompl::geometric::RRTConnect::GrowState ompl::geometric::RRTConnect::growTree(Tre
 
 ompl::base::PlannerStatus ompl::geometric::RRTConnect::solve(const base::PlannerTerminationCondition &ptc)
 {
+    clock_t begin_all = clock();
+    clock_t end_all = clock();
     checkValidity();
     auto *goal = dynamic_cast<base::GoalSampleableRegion *>(pdef_->getGoal().get());
 
     if (goal == nullptr)
     {
         OMPL_ERROR("%s: Unknown type of goal", getName().c_str());
+        saveLogToFile(-1,-1);
         return base::PlannerStatus::UNRECOGNIZED_GOAL_TYPE;
     }
 
@@ -205,12 +208,14 @@ ompl::base::PlannerStatus ompl::geometric::RRTConnect::solve(const base::Planner
     if (tStart_->size() == 0)
     {
         OMPL_ERROR("%s: Motion planning start tree could not be initialized!", getName().c_str());
+        saveLogToFile(-1,-1);
         return base::PlannerStatus::INVALID_START;
     }
 
     if (!goal->couldSample())
     {
         OMPL_ERROR("%s: Insufficient states in sampleable goal region", getName().c_str());
+        saveLogToFile(-1,-1);
         return base::PlannerStatus::INVALID_GOAL;
     }
 
@@ -326,6 +331,13 @@ ompl::base::PlannerStatus ompl::geometric::RRTConnect::solve(const base::Planner
 
                 pdef_->addSolutionPath(path, false, 0.0, getName());
                 solved = true;
+
+                base::OptimizationObjectivePtr opt_;
+                if (pdef_->hasOptimizationObjective())
+                    opt_ = pdef_->getOptimizationObjective();
+                pdef_->setOptimizationObjective(opt_);
+                cost_ = path->cost(opt_);
+
                 break;
             }
             else
@@ -368,8 +380,18 @@ ompl::base::PlannerStatus ompl::geometric::RRTConnect::solve(const base::Planner
         for (int i = mpath.size() - 1; i >= 0; --i)
             path->append(mpath[i]->state);
         pdef_->addSolutionPath(path, true, approxdif, getName());
+        saveLogToFile(-1,-1);
         return base::PlannerStatus::APPROXIMATE_SOLUTION;
     }
+
+    end_all = clock();
+    if(solved)
+    {
+        saveLogToFile((end_all-begin_all)*1000.0/CLOCKS_PER_SEC,cost_.value());
+    } else{
+        saveLogToFile(-1,-1);
+    }
+
 
     return solved ? base::PlannerStatus::EXACT_SOLUTION : base::PlannerStatus::TIMEOUT;
 }
@@ -412,4 +434,28 @@ void ompl::geometric::RRTConnect::getPlannerData(base::PlannerData &data) const
 
     // Add some info.
     data.properties["approx goal distance REAL"] = ompl::toString(distanceBetweenTrees_);
+}
+
+bool ompl::geometric::RRTConnect::saveLogToFile(double time, double cost){
+    std::string home_path = getenv("HOME");
+    std::string file_name_path = "/tmp/rm_name";
+    std::string filename;
+    std::fstream namefin(file_name_path, std::ios::in);
+    if (!namefin.is_open()) {
+        OMPL_ERROR("unable to open file %s", (file_name_path).c_str());
+    }
+    namefin >> filename;
+    namefin.close();
+    printf("writing to file...");
+    std::string save_path_full = "/mgn_data/test_log/RRTConnectlog.txt";
+    std::fstream fout(home_path+save_path_full, std::ios::app);
+    if (!fout.is_open()) {
+        std::cerr << "unable to open file " << home_path+save_path_full << std::endl;
+    }
+    fout <<filename<<"  time "<<time<<"  cost "<<cost;
+    std::cout <<filename<<"  time "<<time<<"  cost "<<cost;
+    fout <<std::endl;
+    fout.close();
+    std::cout <<std::endl;
+    return true;
 }

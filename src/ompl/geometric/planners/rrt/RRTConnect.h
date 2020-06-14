@@ -191,6 +191,9 @@ namespace ompl
 
             /** \brief Distance between the nearest pair of start tree and goal tree nodes. */
             double distanceBetweenTrees_;
+
+            bool saveLogToFile(double time,double cost);
+            base::Cost cost_;
         };
     }
 }

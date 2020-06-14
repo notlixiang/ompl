@@ -885,18 +885,18 @@ bool ompl::geometric::ValidStateGen::getVertexData()
 {
     OMPL_INFORM("getVertexData");
     std::string home_path = getenv("HOME");
-    const char *file_name_path = "/tmp/rm_name";
+    std::string file_name_path = "/tmp/rm_name";
     std::string filename;
     std::fstream fin(file_name_path, std::ios::in);
     if (!fin.is_open())
     {
-        OMPL_ERROR("无法打开文件 %s", file_name_path);
+        OMPL_ERROR("unable to open file %s", file_name_path.c_str());
         return false;
     }
     fin >> filename;
     fin.close();
 
-    OMPL_INFORM("filename %s", filename.data());
+    OMPL_INFORM("filename %s", filename.c_str());
     std::string filenamefullpath = home_path + "/mgn_data/prm/" + filename + ".prm";
     std::fstream fout(filenamefullpath, std::ios::out);
     //    fout.open(filename_.data(),ios::in|ios::out);
@@ -904,7 +904,7 @@ bool ompl::geometric::ValidStateGen::getVertexData()
     if (!fout.is_open())
     {
         OMPL_ERROR(filenamefullpath.c_str());
-        OMPL_INFORM("error filename %s", filenamefullpath.data());
+        OMPL_INFORM("error filename %s", filenamefullpath.c_str());
         printf(filenamefullpath.c_str());
         return false;
     }
@@ -929,18 +929,18 @@ bool ompl::geometric::ValidStateGen::saveTryTimes()
     OMPL_INFORM("saveTryTimes");
 
     std::string home_path = getenv("HOME");
-    const char *file_name_path = "/tmp/rm_name";
+    std::string file_name_path = "/tmp/rm_name";
     std::string filename;
     std::fstream fin(file_name_path, std::ios::in);
     if (!fin.is_open())
     {
-        OMPL_ERROR("无法打开文件 %s", file_name_path);
+        OMPL_ERROR("unable to open file %s", file_name_path.c_str());
         return false;
     }
     fin >> filename;
     fin.close();
 
-    OMPL_INFORM("filename %s", filename.data());
+    OMPL_INFORM("filename %s", filename.c_str());
     std::string filenamefullpath = home_path + "/mgn_data/TryTimes/" + filename + ".pts";
     std::fstream fout(filenamefullpath, std::ios::out);
     //    fout.open(filename_.data(),ios::in|ios::out);
@@ -948,7 +948,7 @@ bool ompl::geometric::ValidStateGen::saveTryTimes()
     if (!fout.is_open())
     {
         OMPL_ERROR(filenamefullpath.c_str());
-        OMPL_INFORM("error filename %s", filenamefullpath.data());
+        OMPL_INFORM("error filename %s", filenamefullpath.c_str());
         return false;
     }
     size_t len = try_times.size();

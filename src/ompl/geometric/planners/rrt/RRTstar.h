@@ -524,6 +524,8 @@ namespace ompl
             {
                 return std::to_string(bestCost().value());
             }
+            
+            bool saveLogToFile(double time,double cost);
         };
     }
 }

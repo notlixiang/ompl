@@ -654,7 +654,7 @@ int ompl::geometric::LazyPRMNN3D::addGeneratdMilestones()
     std::fstream namefin(file_name_path, std::ios::in);
     if (!namefin.is_open())
     {
-        OMPL_ERROR("无法打开文件 %s", file_name_path);
+        OMPL_ERROR("unable to open file %s", file_name_path);
         return false;
     }
     namefin >> filename;
@@ -745,7 +745,7 @@ bool ompl::geometric::LazyPRMNN3D::saveLogToFile(double time, double cost_raw, d
     std::fstream namefin(file_name_path, std::ios::in);
     if (!namefin.is_open())
     {
-        OMPL_ERROR("无法打开文件 %s", file_name_path);
+        OMPL_ERROR("unable to open file %s", file_name_path);
     }
     namefin >> filename;
     namefin.close();
@@ -754,7 +754,7 @@ bool ompl::geometric::LazyPRMNN3D::saveLogToFile(double time, double cost_raw, d
     std::fstream fout(home_path + save_path_full, std::ios::app);
     if (!fout.is_open())
     {
-        std::cerr << "无法打开文件 " << home_path + save_path_full << std::endl;
+        std::cerr << "unable to open file " << home_path + save_path_full << std::endl;
     }
     fout << filename << "  time " << time << "  cost_raw " << cost_raw << "  cost_optimized " << cost_optimized;
     std::cout << filename << "  time " << time << "  cost_raw " << cost_raw << "  cost_optimized " << cost_optimized;

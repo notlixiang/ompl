@@ -45,6 +45,13 @@
 #include <vector>
 #include <map>
 
+
+#include <ompl/base/SpaceInformation.h>
+#include <ompl/base/spaces/SE3StateSpace.h>
+#include <ompl/base/samplers/ObstacleBasedValidStateSampler.h>
+#include <ompl/geometric/SimpleSetup.h>
+#include <ompl/config.h>
+
 namespace ompl
 {
     namespace base
@@ -361,6 +368,10 @@ namespace ompl
             base::Cost bestCost_{std::numeric_limits<double>::quiet_NaN()};
 
             unsigned long int iterations_{0};
+            
+            bool saveLogToFile(double time,double cost);
+
+            int addGeneratdMilestones();
         };
     }
 }

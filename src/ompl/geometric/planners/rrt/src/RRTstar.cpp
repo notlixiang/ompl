@@ -164,6 +164,8 @@ void ompl::geometric::RRTstar::clear()
 
 ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTerminationCondition &ptc)
 {
+    clock_t begin_all = clock();
+    clock_t end_all = clock();
     checkValidity();
     base::Goal *goal = pdef_->getGoal().get();
     auto *goal_s = dynamic_cast<base::GoalSampleableRegion *>(goal);
@@ -191,6 +193,7 @@ ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTer
     if (nn_->size() == 0)
     {
         OMPL_ERROR("%s: There are no valid initial states!", getName().c_str());
+        saveLogToFile(-1,-1);
         return base::PlannerStatus::INVALID_START;
     }
 
@@ -480,6 +483,7 @@ ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTer
                     OMPL_INFORM("%s: Found an initial solution with a cost of %.2f in %u iterations (%u "
                                 "vertices in the graph)",
                                 getName().c_str(), bestCost_, iterations_, nn_->size());
+                    end_all = clock();
                 }
                 else
                 {
@@ -597,6 +601,12 @@ ompl::base::PlannerStatus ompl::geometric::RRTstar::solve(const base::PlannerTer
                 getName().c_str(), statesGenerated, rewireTest, goalMotions_.size(), bestCost_.value());
 
     // We've added a solution if newSolution == true, and it is an approximate solution if bestGoalMotion_ == false
+    if(newSolution != nullptr)
+    {
+        saveLogToFile((end_all-begin_all)*1000.0/CLOCKS_PER_SEC,bestCost_.value());
+    } else{
+        saveLogToFile(-1,-1);
+    }
     return base::PlannerStatus(newSolution != nullptr, bestGoalMotion_ == nullptr);
 }
 
@@ -1156,4 +1166,28 @@ void ompl::geometric::RRTstar::calculateRewiringLowerBounds()
     r_rrt_ =
         rewireFactor_ *
         std::pow(2 * (1.0 + 1.0 / dimDbl) * (prunedMeasure_ / unitNBallMeasure(si_->getStateDimension())), 1.0 / dimDbl);
+}
+
+bool ompl::geometric::RRTstar::saveLogToFile(double time, double cost){
+    std::string home_path = getenv("HOME");
+    std::string file_name_path = "/tmp/rm_name";
+    std::string filename;
+    std::fstream namefin(file_name_path, std::ios::in);
+    if (!namefin.is_open()) {
+        OMPL_ERROR("unable to open file %s", (file_name_path).c_str());
+    }
+    namefin >> filename;
+    namefin.close();
+    printf("writing to file...");
+    std::string save_path_full = "/mgn_data/test_log/RRTstarlog.txt";
+    std::fstream fout(home_path+save_path_full, std::ios::app);
+    if (!fout.is_open()) {
+        std::cerr << "unable to open file " << home_path+save_path_full << std::endl;
+    }
+    fout <<filename<<"  time "<<time<<"  cost "<<cost;
+    std::cout <<filename<<"  time "<<time<<"  cost "<<cost;
+    fout <<std::endl;
+    fout.close();
+    std::cout <<std::endl;
+    return true;
 }
