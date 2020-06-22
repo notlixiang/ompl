@@ -103,7 +103,7 @@ void ompl::geometric::RRTstar::setup()
 
     if (!nn_)
         nn_.reset(tools::SelfConfig::getDefaultNearestNeighbors<Motion *>(this));
-    nn_->setDistanceFunction([this](const Motion *a, const Motion *b) { saveLogToFile(-1,-1);return distanceFunction(a, b); });
+    nn_->setDistanceFunction([this](const Motion *a, const Motion *b) {return distanceFunction(a, b); });
 
     // Setup optimization objective
     //
